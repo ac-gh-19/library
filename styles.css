@@ -2,3 +2,24 @@
     margin: 0;
     padding: 0;
 }
+
+body {
+    height: 100vh;
+    width: 100vw;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: minmax(200px, 1fr) 4fr; 
+    grid-template-rows: minmax(100px, 1fr) 7fr;
+    height: 100vh;
+}
+
+.container > * {
+    border: 1px solid red;
+}
+
+.header {
+    grid-column: 1 / 3;
+}
+
