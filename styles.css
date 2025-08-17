@@ -38,7 +38,7 @@
 }
 
 .container > * {
-    border: 1px solid red;
+    /* border: 1px solid red; */
 }
 
 .header {
@@ -50,7 +50,7 @@
 .header > div  {
     display: flex;
     align-items: center;
-    border: 1px solid red;
+    /* border: 1px solid red; */
     justify-content: center;
 }
 
@@ -103,9 +103,13 @@ input[type="search"]::-webkit-search-cancel-button {
 .sidebar {
     display: grid;
     grid-template-rows: 3fr 2fr;
-    padding: clamp(.5rem, 2vw, 1.5rem);
+    padding: clamp(.5rem, 2vw, 1rem);
     gap: clamp(1rem, 2vw, 2rem);
     overflow-y: auto;
+}
+
+.display {
+    padding: clamp(.5rem, 2vw, 1rem);
 }
 
 .sidebar > * {
@@ -124,11 +128,58 @@ input[type="search"]::-webkit-search-cancel-button {
     padding-left: clamp(0rem, 1vw, 1rem);
     align-items: center;
     padding-bottom: .5rem;
+    transition: transform .25s ease;
 }
 
 .genres > h3,
 .viewOptions > h3 {
     padding-bottom: .5rem;
 }
+
+.display {
+    display: grid;
+    grid-template-rows: 1fr 7fr;
+}
+
+.display > *{
+    border: 1px solid red;
+}
+
+.displayOptionsContainer {
+    display: flex;
+    gap: clamp(1rem, 2.5vw, 2rem);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.genre:hover,
+.option:hover {
+    transform: scale(1.1);
+}
+
+
+.libraryInfo,
+.bookDisplayOptions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1rem, 2vw, 2rem);
+}
+
+/* lines up text of library info and filtering options */
+.info {
+    padding-top: 3.5px; 
+}
+
+.info,
+.filters {
+    border: 1px solid black;
+    min-width: clamp(3rem, 10vw, 9rem);
+    height: 3rem;
+    text-align: center;
+    flex-shrink: 1;
+}
+
+
 
 
