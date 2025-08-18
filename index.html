@@ -8,6 +8,48 @@
 </head>
 <body>
     <div class="container">
+        <!-- MODALS - TO BE HIDDEN THEN SHOWN WHEN EVENT HAPPENS -->
+        <div id="formModal">
+            <div class="formContainer">
+                <button type="button" id="closeFormBtn">X</button>
+                <h3 class="formHeader">Add New Book</h3>
+                <form id="bookForm">
+                    <div class="bookFormOption">
+                        <label>
+                            <span class="inputTitle">Title</span>
+                            <input type="text" required>
+                        </label>
+                    </div>
+                    <div class="bookFormOption">
+                        <label>
+                            <span class="inputTitle">Author</span>
+                            <input type="text" required>
+                        </label>
+                    </div>
+                    <div class="bookFormOption">
+                        <label>
+                            <span class="inputTitle" required>Pages</span>
+                            <input type="text">
+                        </label>
+                    </div>
+                    <div class="bookFormOption">
+                        <label>
+                            <span class="inputTitle">Date Read</span>
+                            <input type="date">
+                        </label>
+                    </div>
+                    <div class="bookFormOption">
+                        <span class="inputTitle">Status</span>
+                        <select name="status" id="status">
+                            <option value="read">Read</option>
+                            <option value="read">Unread</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- MODALS - TO BE HIDDEN THEN SHOWN WHEN EVENT HAPPENS -->
 
         <div class="header">
             <div class="headerTitle">
@@ -125,6 +167,22 @@
             </div>
 
             <div class="displayBooks">
+                <div class="bookContainer">
+                    <img src="" alt="">
+
+                </div>
+                <div class="bookContainer">
+
+                </div>
+                <div class="bookContainer">
+
+                </div>
+                <div class="bookContainer">
+
+                </div>
+                <div class="bookContainer">
+
+                </div>
 
             </div>
         </div>
