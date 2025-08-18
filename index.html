@@ -7,6 +7,23 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <script>
+        const url = "https://openlibrary.org/search.json?q=test";
+        const headers = new Headers({
+            "User-Agent": "bookTrackerAndExplorer (chanandrew1925@gmail.com)"
+        });
+    
+        const options = {
+            method: 'GET',
+            headers: headers
+        };
+    
+        fetch(url, options)
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+    </script>
+
     <div class="container">
         <!-- MODALS - TO BE HIDDEN THEN SHOWN WHEN EVENT HAPPENS -->
         <div id="formModal">
@@ -15,37 +32,38 @@
                 <h3 class="formHeader">Add New Book</h3>
                 <form id="bookForm">
                     <div class="bookFormOption">
-                        <label>
-                            <span class="inputTitle">Title</span>
-                            <input type="text" required>
+                        <label for="title">
+                            <span class="inputTitle">Title<span aria-label="required">*</span></span>
+                            <input type="text" name="title" id="title" required placeholder="Harry Potter and the Sorcerer's Stone" pattern="[A-Za-z0-9\s&()'.,:;!?-]{2,100}">
                         </label>
                     </div>
                     <div class="bookFormOption">
-                        <label>
-                            <span class="inputTitle">Author</span>
-                            <input type="text" required>
+                        <label for="author">
+                            <span class="inputTitle">Author<span aria-label="required">*</span></span>
+                            <input type="text" name="author" id="author" required placeholder="J. K. Rowling" pattern="^[A-Za-z\s.'-]{2,50}$">
                         </label>
                     </div>
                     <div class="bookFormOption">
-                        <label>
-                            <span class="inputTitle" required>Pages</span>
-                            <input type="text">
+                        <label for="pages">
+                            <span class="inputTitle">Pages<span aria-label="required">*</span></span>
+                            <input type="number" name="pages" id="pages" placeholder="309" required>
                         </label>
                     </div>
                     <div class="bookFormOption">
-                        <label>
-                            <span class="inputTitle">Date Read</span>
-                            <input type="date">
+                        <label for="date">
+                            <span class="inputTitle">Date Obtained</span>
+                            <input type="date" name="date" id="date">
                         </label>
                     </div>
                     <div class="bookFormOption">
                         <span class="inputTitle">Status</span>
                         <select name="status" id="status">
-                            <option value="read">Read</option>
                             <option value="read">Unread</option>
+                            <option value="read">Read</option>
                         </select>
                     </div>
                 </form>
+                <button type="submit" id="submitFormBtn" form="bookForm">Add Book</button>
             </div>
         </div>
         
@@ -166,21 +184,41 @@
                 <button type="button" id="showFormBtn" class="filters">New Book</button>
             </div>
 
-            <div class="displayBooks">
+            <div class="displayBooks" id="display">
                 <div class="bookContainer">
-                    <img src="" alt="">
+                    <img src="assets/catpfp.jpg" alt="Book Cover" class="bookCover">
+                    <div class="bookInfo">
+                        <div class="bookCardLargeFont">Book Title</div>
+                        <div class="bookCardMedFont">by <em>Author</em> </div>
+                        <div>451 Pages</div>
+                        <div class="lineSeperator"></div>
+                        <p class="bookDescription">Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia nulla iste necessitatibus quo fugit consectetur.</p>
+                    </div>
+                    <div class="editBookContainer">
+                        <div class="editBook">
+                            <img src="assets/editPen.svg" alt="Edit" class="smallIcons">
+                            <img src="assets/heart.svg" alt="Heart" class="smallIcons">
+                            <img src="assets/checkmark.svg" alt="Check Mark" class="smallIcons">
+                        </div>
+                        <div class="trashBook">
+                            <img src="assets/trash.svg" alt="Trash Can" class="smallIcons">
+                        </div>
+                    </div>
+                </div>
+                <div class="bookContainer">
+                    <img src="assets/catpfp.jpg" alt="Book Cover" class="bookCover">
 
                 </div>
                 <div class="bookContainer">
+                    <img src="assets/catpfp.jpg" alt="Book Cover" class="bookCover">
 
                 </div>
                 <div class="bookContainer">
+                    <img src="assets/catpfp.jpg" alt="Book Cover" class="bookCover">
 
                 </div>
                 <div class="bookContainer">
-
-                </div>
-                <div class="bookContainer">
+                    <img src="assets/catpfp.jpg" alt="Book Cover" class="bookCover">
 
                 </div>
 
