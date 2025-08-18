@@ -31,20 +31,18 @@ document.getElementById("date").value = getTodayDate();
 // getData();
 
 
-function Book(title, author, date, pages, read, description, imgsrc) {
+function Book(title, author, date, pages, read, imgsrc) {
     return {
         title: title,
         author: author,
         date: date,
         pages: pages,
         read: read,
-        description: description,
         imgsrc: imgsrc,
     }
 }
 
 function addNewBookToDisplay(book) {
-    // book object example: { title: "Book Title", author: "Author", pages: 451, description: "Some description", cover: "assets/catpfp.jpg" }
 
     // Create main container
     const bookContainer = document.createElement('div');
@@ -74,15 +72,6 @@ function addNewBookToDisplay(book) {
     const pagesDiv = document.createElement('div');
     pagesDiv.textContent = `${book.pages} Pages`;
     bookInfo.appendChild(pagesDiv);
-
-    const lineDiv = document.createElement('div');
-    lineDiv.classList.add('lineSeperator');
-    bookInfo.appendChild(lineDiv);
-
-    const descP = document.createElement('p');
-    descP.classList.add('bookDescription');
-    descP.textContent = book.description;
-    bookInfo.appendChild(descP);
 
     bookContainer.appendChild(bookInfo);
 
@@ -121,8 +110,8 @@ function addNewBookToDisplay(book) {
     document.getElementById("display").append(bookContainer);
 }
 
-function addBook(title, author, date, pages, read, description, imgsrc) {
-    let newBook = new Book(title, author, date, pages, read, description, imgsrc);
+function addBook(title, author, date, pages, read, imgsrc) {
+    let newBook = new Book(title, author, date, pages, read, imgsrc);
     library.myBooks.push(newBook);
     library.numBooks++;
     
@@ -155,7 +144,7 @@ bookForm.addEventListener("submit", async e => {
             }
             let cover = book.cover_i; 
             let imgsrc = `https://covers.openlibrary.org/b/id/${cover}-L.jpg`;
-            addBook(title, author, date, pages, read, "desciripton", imgsrc);
+            addBook(title, author, date, pages, read, imgsrc);
             alert("Your book has been added!");
         }
     } catch (error) {
