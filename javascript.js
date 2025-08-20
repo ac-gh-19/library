@@ -13,13 +13,13 @@ const bookForm = document.querySelector("#bookForm");
 
 // keeps track of our collection of books to display info
 let library = {
-    myBooks: [],
+    myBooks: {},
     numBooks: 0,
     numPages: 0,
     numReadBooks: 0,
 }
 
-function Book(title, author, date, pages, read, imgsrc) {
+function Book(title, author, date, pages, read, imgsrc, id) {
     return {
         title: title,
         author: author,
@@ -27,20 +27,21 @@ function Book(title, author, date, pages, read, imgsrc) {
         pages: pages,
         read: read,
         imgsrc: imgsrc,
+        id: id,
     }
 }
 
 let defaultCollection = [
-    Book("1984", "George Orwell", "1949-06-08", 328, true, "https://covers.openlibrary.org/b/id/7222246-L.jpg"),
-    Book("The Hobbit", "J.R.R. Tolkien", "1937-09-21", 310, true, "https://covers.openlibrary.org/b/id/6979861-L.jpg"),
-    Book("The Outsiders", "S. E. Hinton", "1967‑04‑24", 192, true, "https://covers.openlibrary.org/b/olid/OL17063415M-L.jpg"),
-    Book("Fahrenheit 451", "Ray Bradbury", "1953‑10‑19", 190, true, "https://covers.openlibrary.org/b/olid/OL31448957M-L.jpg"),
-    Book("The Great Gatsby", "F. Scott Fitzgerald", "1925‑04‑10", 182, true, "https://covers.openlibrary.org/b/olid/OL26491064M-L.jpg"),
+        ,
+    Book("The Hobbit", "J.R.R. Tolkien", "1937-09-21", 310, true, "https://covers.openlibrary.org/b/id/6979861-L.jpg", 6979861),
+    Book("The Outsiders", "S. E. Hinton", "1967‑04‑24", 192, true, "https://covers.openlibrary.org/b/olid/OL17063415M-L.jpg", "OL17063415M"),
+    Book("Fahrenheit 451", "Ray Bradbury", "1953‑10‑19", 190, true, "https://covers.openlibrary.org/b/olid/OL31448957M-L.jpg", "OL31448957M"),
+    Book("The Great Gatsby", "F. Scott Fitzgerald", "1925‑04‑10", 182, true, "https://covers.openlibrary.org/b/olid/OL26491064M-L.jpg", "OL26491064M"),
 ];
 
 function loadDefaultCollection() {
     defaultCollection.forEach(book => {
-        library.myBooks.push(book);
+        library.myBooks[book.title] = book;
         library.numBooks++;
         if (book.read) library.numReadBooks++;
         library.numPages += book.pages;
@@ -61,79 +62,121 @@ function getTodayDate() {
 
 document.getElementById("date").value = getTodayDate();
 
+function createSVGElement(tag, attrs = {}) {
+    const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (const [key, value] of Object.entries(attrs)) {
+      el.setAttribute(key, value);
+    }
+    return el;
+}
+
 // creates a book card with book obj and appends it to the display
 function addNewBookToDisplay(book) {
-
     // Create main container
     const bookContainer = document.createElement('div');
     bookContainer.classList.add('bookContainer');
-
+    bookContainer.setAttribute('id', book.id);
+  
     // Book cover image
     const img = document.createElement('img');
     img.src = book.imgsrc || 'assets/catpfp.jpg';
     img.alt = "Book Cover";
     img.classList.add('bookCover');
     bookContainer.appendChild(img);
-
+  
     // Book info container
     const bookInfo = document.createElement('div');
     bookInfo.classList.add('bookInfo');
-
+  
     const titleDiv = document.createElement('div');
     titleDiv.classList.add('bookCardLargeFont');
     titleDiv.textContent = book.title;
     bookInfo.appendChild(titleDiv);
-
+  
     const authorDiv = document.createElement('div');
     authorDiv.classList.add('bookCardMedFont');
     authorDiv.innerHTML = `by <em>${book.author}</em>`;
     bookInfo.appendChild(authorDiv);
-
+  
     const pagesDiv = document.createElement('div');
     pagesDiv.textContent = `${book.pages} Pages`;
     bookInfo.appendChild(pagesDiv);
-
+  
     bookContainer.appendChild(bookInfo);
-
-    // Edit and trash icons container
+  
+    // ---- Icon container ----
     const editBookContainer = document.createElement('div');
     editBookContainer.classList.add('editBookContainer');
-
+  
     const editBook = document.createElement('div');
     editBook.classList.add('editBook');
-
-    const icons = ['editPen.svg', 'heart.svg', 'checkmark.svg'];
-    const alts = ['Edit', 'Heart', 'Check Mark'];
-
-    icons.forEach((icon, index) => {
-        const iconImg = document.createElement('img');
-        iconImg.src = `assets/${icon}`;
-        iconImg.alt = alts[index];
-        iconImg.classList.add('smallIcons');
-        editBook.appendChild(iconImg);
-    });
-
-    editBookContainer.appendChild(editBook);
-
     const trashBook = document.createElement('div');
     trashBook.classList.add('trashBook');
+  
+    // --- Edit Pen ---
+    const svgPen = createSVGElement("svg", { class: "smallIcons", viewBox: "0 0 24 24" });
+    const gPen = createSVGElement("g", {
+      stroke: "currentColor", fill: "none",
+      "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2"
+    });
+    const pathPen = createSVGElement("path", { d: "M20,16v4a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V6A2,2,0,0,1,4,4H8" });
+    const polygonPen = createSVGElement("polygon", { points: "12.5 15.8 22 6.2 17.8 2 8.3 11.5 8 16 12.5 15.8" });
+    gPen.appendChild(pathPen);
+    gPen.appendChild(polygonPen);
+    svgPen.appendChild(gPen);
+    editBook.appendChild(svgPen);
+  
+    // --- Heart ---
+    const svgHeart = createSVGElement("svg", { class: "smallIcons", viewBox: "0 -0.5 32 32" });
+    const pathHeart = createSVGElement("path", {
+      d: "M128,893.682 L116,908 L104,893.623 C102.565,891.629 102,890.282 102,888.438 C102,884.999 104.455,881.904 108,881.875 C110.916,881.851 114.222,884.829 116,887.074 C117.731,884.908 121.084,881.875 124,881.875 C127.451,881.875 130,884.999 130,888.438 C130,890.282 129.553,891.729 128,893.682 Z",
+      fill: "white",
+      transform: "translate(-100 -880)",
+      stroke: "currentColor"
+    });
+    svgHeart.appendChild(pathHeart);
+    editBook.appendChild(svgHeart);
+  
+    // --- Checkmark ---
+    const svgCheck = createSVGElement("svg", { class: "smallIcons", viewBox: "0 0 1920 1920" });
+    const pathCheck = createSVGElement("path", {
+      d: "M1743.858 267.012 710.747 1300.124 176.005 765.382 0 941.387l710.747 710.871 1209.24-1209.116z",
+      fill: "currentColor",
+    });
+    svgCheck.appendChild(pathCheck);
+    editBook.appendChild(svgCheck);
+  
+    // --- Trash ---
+    const svgTrash = createSVGElement("svg", { class: "smallIcons", viewBox: "0 0 32 32" });
+    const path1 = createSVGElement("path", {
+      d: "M22.68,29H9.32a3,3,0,0,1-3-2.56l-3-20A3,3,0,0,1,6.32,3H25.68a3,3,0,0,1,3,3.45l-3,20A3,3,0,0,1,22.68,29Z",
+      fill: "white",
+      stroke: "currentColor",
+    });
+    const path2 = createSVGElement("path", {
+      d: "M12.61,20.39a1,1,0,0,1-.71-.29,1,1,0,0,1,0-1.41l6.79-6.79a1,1,0,1,1,1.41,1.41L13.31,20.1A1,1,0,0,1,12.61,20.39Z",
+      fill: "currentColor"
+    });
+    const path3 = createSVGElement("path", {
+      d: "M19.39,20.39a1,1,0,0,1-.7-.29L11.9,13.31a1,1,0,0,1,1.41-1.41l6.79,6.79a1,1,0,0,1,0,1.41A1,1,0,0,1,19.39,20.39Z",
+      fill: "currentColor"
+    });
+    
+    svgTrash.appendChild(path1);
+    svgTrash.appendChild(path2);
+    svgTrash.appendChild(path3);
+    trashBook.appendChild(svgTrash);
 
-    const trashImg = document.createElement('img');
-    trashImg.src = 'assets/trash.svg';
-    trashImg.alt = 'Trash Can';
-    trashImg.classList.add('smallIcons');
-
-    trashBook.appendChild(trashImg);
+    editBookContainer.appendChild(editBook);
     editBookContainer.appendChild(trashBook);
     bookContainer.appendChild(editBookContainer);
-
+  
     document.getElementById("display").append(bookContainer);
 }
-
 // creates a new book object and updates our library information
-function addBook(title, author, date, pages, read, imgsrc) {
-    let newBook = new Book(title, author, date, pages, read, imgsrc);
-    library.myBooks.push(newBook);
+function addBook(title, author, date, pages, read, imgsrc, id) {
+    let newBook = new Book(title, author, date, +pages, read, imgsrc, id);
+    library.myBooks[newBook.title] = newBook;
     library.numBooks++;
     if (read) library.numReadBooks++;
     library.numPages += newBook.pages;
@@ -141,12 +184,13 @@ function addBook(title, author, date, pages, read, imgsrc) {
     addNewBookToDisplay(newBook);
 }
 
-function resetInputForm() {
+function resetInputForm(bookForm) {
     bookForm.title.value = ""; 
     bookForm.author.value = ""; 
     bookForm.pages.value = ""; 
     bookForm.date.value = getTodayDate(); 
-    bookForm.status.value = "Unread"; 
+    bookForm.status.value = "unread"; 
+    bookForm.status.selectedIndex = 0;
 }
 
 function getBookData(book) {
@@ -162,8 +206,12 @@ function getFormData(form) {
     return {
         date: form.date.value,
         pages: form.pages.value,
-        read: (form.status.value == "Read"),
+        read: (form.status.value == "read"),
     }
+}
+
+function bookExists(key) {
+    return library.myBooks.hasOwnProperty(key);
 }
 
 bookForm.addEventListener("submit", async e => {
@@ -180,14 +228,19 @@ bookForm.addEventListener("submit", async e => {
             alert("Sorry! Your book cannot be found");
         } else {
             let book = data.docs[0];
-            const { title, author, cover, imgsrc } = getBookData(book);
+            const { title, author, coverid, imgsrc } = getBookData(book);
             const { date, pages, read } = getFormData(bookForm);
-            addBook(title, author, date, pages, read, imgsrc);
+            if (bookExists(title)) {
+                alert("Your book already exists");
+                return;
+            }
+            addBook(title, author, date, pages, read, imgsrc, coverid);
             alert("Your book has been added!");
-            resetInputForm();
+            resetInputForm(bookForm);
         }
     } catch (error) {
-        alert("There was an error trying to add the book.");
+        alert("There was an error trying to add the book");
+        console.log(error);
     }
 });
 
