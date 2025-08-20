@@ -10,6 +10,9 @@ const coverUrl = "https://covers.openlibrary.org/b/";
 const closeFormBtn = document.querySelector("#closeFormBtn");
 const showFormBtn = document.querySelector("#showFormBtn");
 const bookForm = document.querySelector("#bookForm");
+const numBooksTracker = document.querySelector("#numBooks");
+const readBooksTracker = document.querySelector("#readBooks");
+const numPagesTracker = document.querySelector("#numPages");
 
 // keeps track of our collection of books to display info
 let library = {
@@ -31,8 +34,14 @@ function Book(title, author, date, pages, read, imgsrc, id) {
     }
 }
 
+function updateStatusOfLibrary() {
+    numBooksTracker.textContent = library.numBooks;
+    readBooksTracker.textContent = `${library.numReadBooks} / ${library.numBooks}`;
+    numPagesTracker.textContent = library.numPages;
+}
+
 let defaultCollection = [
-        ,
+    Book("1984", "George Orwell","1949-06-08", 328, true, "https://covers.openlibrary.org/b/id/7222246-L.jpg", 7222246),
     Book("The Hobbit", "J.R.R. Tolkien", "1937-09-21", 310, true, "https://covers.openlibrary.org/b/id/6979861-L.jpg", 6979861),
     Book("The Outsiders", "S. E. Hinton", "1967‑04‑24", 192, true, "https://covers.openlibrary.org/b/olid/OL17063415M-L.jpg", "OL17063415M"),
     Book("Fahrenheit 451", "Ray Bradbury", "1953‑10‑19", 190, true, "https://covers.openlibrary.org/b/olid/OL31448957M-L.jpg", "OL31448957M"),
@@ -47,6 +56,7 @@ function loadDefaultCollection() {
         library.numPages += book.pages;
         addNewBookToDisplay(book);
     });
+    updateStatusOfLibrary();
 }
 
 loadDefaultCollection();
@@ -182,6 +192,7 @@ function addBook(title, author, date, pages, read, imgsrc, id) {
     library.numPages += newBook.pages;
     
     addNewBookToDisplay(newBook);
+    updateStatusOfLibrary();
 }
 
 function resetInputForm(bookForm) {
