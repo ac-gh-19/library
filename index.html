@@ -9,10 +9,10 @@
 <body>
     <div class="container">
         <!-- MODALS - TO BE HIDDEN THEN SHOWN WHEN EVENT HAPPENS -->
-        <div id="formModal">
+        <div id="formModal" class="modal">
             <div class="formContainer">
                 <button type="button" id="closeFormBtn">X</button>
-                <h3 class="formHeader">Add New Book</h3>
+                <h3 class="formHeader"><span id="formStateHeader"></span></h3>
                 <form id="bookForm">
                     <div class="bookFormOption">
                         <label for="title">
@@ -46,7 +46,17 @@
                         </select>
                     </div>
                 </form>
-                <button type="submit" id="submitFormBtn" form="bookForm">Add Book</button>
+                <button type="submit" id="submitFormBtn" form="bookForm"><span id="formStateBtn">Add Book</span></button>
+            </div>
+        </div>
+
+        <div id="confirmDeleteModal" class="modal">
+            <div class="confirmDeleteContainer">
+                <h1>Are you sure you want to delete this book?</h1>
+                <div>
+                    <button id="confirmDeleteBtn" class="deleteModalBtn">Yes</button>
+                    <button id="declineDeleteBtn" class="deleteModalBtn">No</button>
+                </div>
             </div>
         </div>
         

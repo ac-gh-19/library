@@ -13,7 +13,7 @@ img {
     width: 100%;
 }
 
-/* STYLING RESETS */
+/* -------------- */
 
 :root {
     --smallIcons: 1.8rem;
@@ -30,7 +30,7 @@ body {
     background-color: rgba(249, 252, 252, 0.976)
 }
 
-#formModal {
+.modal {
     display: none;
     position: fixed;
     top: 0;
@@ -45,7 +45,32 @@ body {
     background: rgba(128, 128, 128, .8);
 }
 
-#formModal.show {
+.confirmDeleteContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: 1px solid black;
+    padding: 1rem;
+    border-radius: 1rem;
+    gap: 1rem;
+    background: white;
+}
+
+.confirmDeleteContainer > div {
+    display: flex;
+    gap: clamp(2rem, 10vw, 3rem);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.deleteModalBtn {
+    width: clamp(4rem, 30vw, 10rem);
+    height: 3rem;
+    border-radius: 2rem;
+}
+
+.modal.show {
     opacity: 1;
 }
 
@@ -86,6 +111,8 @@ body {
     width: 100%;
 }
 
+
+
 input,
 #status {
     display: block;
@@ -124,6 +151,14 @@ span[aria-label="required"] {
 
 .genresIcon {
     width: 1rem;
+}
+
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
 }
 
 .container {

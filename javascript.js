@@ -9,10 +9,18 @@ const bookUrl = "https://openlibrary.org/search.json?";
 const coverUrl = "https://covers.openlibrary.org/b/";
 const closeFormBtn = document.querySelector("#closeFormBtn");
 const showFormBtn = document.querySelector("#showFormBtn");
+const formModal = document.querySelector("#formModal");
 const bookForm = document.querySelector("#bookForm");
 const numBooksTracker = document.querySelector("#numBooks");
 const readBooksTracker = document.querySelector("#readBooks");
 const numPagesTracker = document.querySelector("#numPages");
+const display = document.querySelector("#display");
+const confirmDeleteModal = document.querySelector("#confirmDeleteModal");
+const confirmDeleteBtn = document.querySelector("#confirmDeleteBtn");
+const declineDeleteBtn = document.querySelector("#declineDeleteBtn");
+const formStateHeader = document.getElementById("formStateHeader");
+const formStateBtn = document.getElementById("formStateBtn");
+
 
 // keeps track of our collection of books to display info
 let library = {
@@ -21,6 +29,9 @@ let library = {
     numPages: 0,
     numReadBooks: 0,
 }
+
+// 
+let isEditingBook = false;
 
 function Book(title, author, date, pages, read, imgsrc, id) {
     return {
@@ -31,6 +42,7 @@ function Book(title, author, date, pages, read, imgsrc, id) {
         read: read,
         imgsrc: imgsrc,
         id: id,
+        favorited: false,
     }
 }
 
@@ -43,9 +55,9 @@ function updateStatusOfLibrary() {
 let defaultCollection = [
     Book("1984", "George Orwell","1949-06-08", 328, true, "https://covers.openlibrary.org/b/id/7222246-L.jpg", 7222246),
     Book("The Hobbit", "J.R.R. Tolkien", "1937-09-21", 310, true, "https://covers.openlibrary.org/b/id/6979861-L.jpg", 6979861),
-    Book("The Outsiders", "S. E. Hinton", "1967‑04‑24", 192, true, "https://covers.openlibrary.org/b/olid/OL17063415M-L.jpg", "OL17063415M"),
-    Book("Fahrenheit 451", "Ray Bradbury", "1953‑10‑19", 190, true, "https://covers.openlibrary.org/b/olid/OL31448957M-L.jpg", "OL31448957M"),
-    Book("The Great Gatsby", "F. Scott Fitzgerald", "1925‑04‑10", 182, true, "https://covers.openlibrary.org/b/olid/OL26491064M-L.jpg", "OL26491064M"),
+    Book("The Outsiders", "S. E. Hinton", "1967-04-24", 192, true, "https://covers.openlibrary.org/b/olid/OL17063415M-L.jpg", "OL17063415M"),
+    Book("Fahrenheit 451", "Ray Bradbury", "1953-10-19", 190, true, "https://covers.openlibrary.org/b/olid/OL31448957M-L.jpg", "OL31448957M"),
+    Book("The Great Gatsby", "F. Scott Fitzgerald", "1925-04-10", 182, true, "https://covers.openlibrary.org/b/olid/OL26491064M-L.jpg", "OL26491064M"),
 ];
 
 function loadDefaultCollection() {
@@ -61,7 +73,6 @@ function loadDefaultCollection() {
 
 loadDefaultCollection();
 
-// need this to display current day value on input form
 function getTodayDate() {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -70,6 +81,7 @@ function getTodayDate() {
     return `${yyyy}-${mm}-${dd}`;
 }
 
+// need this to display current day value on input form
 document.getElementById("date").value = getTodayDate();
 
 function createSVGElement(tag, attrs = {}) {
@@ -85,7 +97,7 @@ function addNewBookToDisplay(book) {
     // Create main container
     const bookContainer = document.createElement('div');
     bookContainer.classList.add('bookContainer');
-    bookContainer.setAttribute('id', book.id);
+    bookContainer.setAttribute('id', book.title);
   
     // Book cover image
     const img = document.createElement('img');
@@ -134,6 +146,7 @@ function addNewBookToDisplay(book) {
     gPen.appendChild(pathPen);
     gPen.appendChild(polygonPen);
     svgPen.appendChild(gPen);
+    svgPen.classList.add("editpen");
     editBook.appendChild(svgPen);
   
     // --- Heart ---
@@ -142,9 +155,11 @@ function addNewBookToDisplay(book) {
       d: "M128,893.682 L116,908 L104,893.623 C102.565,891.629 102,890.282 102,888.438 C102,884.999 104.455,881.904 108,881.875 C110.916,881.851 114.222,884.829 116,887.074 C117.731,884.908 121.084,881.875 124,881.875 C127.451,881.875 130,884.999 130,888.438 C130,890.282 129.553,891.729 128,893.682 Z",
       fill: "white",
       transform: "translate(-100 -880)",
-      stroke: "currentColor"
+      stroke: "currentColor",
+      "stroke-width": 2.5,
     });
     svgHeart.appendChild(pathHeart);
+    svgHeart.classList.add("heart");
     editBook.appendChild(svgHeart);
   
     // --- Checkmark ---
@@ -154,6 +169,10 @@ function addNewBookToDisplay(book) {
       fill: "currentColor",
     });
     svgCheck.appendChild(pathCheck);
+    if (book.read) {
+        svgCheck.classList.toggle("green");
+    };
+    svgCheck.classList.add("checkmark");
     editBook.appendChild(svgCheck);
   
     // --- Trash ---
@@ -162,6 +181,7 @@ function addNewBookToDisplay(book) {
       d: "M22.68,29H9.32a3,3,0,0,1-3-2.56l-3-20A3,3,0,0,1,6.32,3H25.68a3,3,0,0,1,3,3.45l-3,20A3,3,0,0,1,22.68,29Z",
       fill: "white",
       stroke: "currentColor",
+      "stroke-width": 2.5,
     });
     const path2 = createSVGElement("path", {
       d: "M12.61,20.39a1,1,0,0,1-.71-.29,1,1,0,0,1,0-1.41l6.79-6.79a1,1,0,1,1,1.41,1.41L13.31,20.1A1,1,0,0,1,12.61,20.39Z",
@@ -175,6 +195,7 @@ function addNewBookToDisplay(book) {
     svgTrash.appendChild(path1);
     svgTrash.appendChild(path2);
     svgTrash.appendChild(path3);
+    svgTrash.classList.add("trashcan");
     trashBook.appendChild(svgTrash);
 
     editBookContainer.appendChild(editBook);
@@ -183,6 +204,7 @@ function addNewBookToDisplay(book) {
   
     document.getElementById("display").append(bookContainer);
 }
+
 // creates a new book object and updates our library information
 function addBook(title, author, date, pages, read, imgsrc, id) {
     let newBook = new Book(title, author, date, +pages, read, imgsrc, id);
@@ -194,6 +216,17 @@ function addBook(title, author, date, pages, read, imgsrc, id) {
     addNewBookToDisplay(newBook);
     updateStatusOfLibrary();
 }
+
+function removeBook(id) {
+    library.numBooks--;
+    library.numPages -= library.myBooks[id].pages;
+    if (library.myBooks[id].read) library.numReadBooks--;
+    delete library.myBooks[id];
+    updateStatusOfLibrary();
+    display.removeChild(document.getElementById(id));
+    alert("Your book has been removed");
+    hideModal(confirmDeleteModal);
+};
 
 function resetInputForm(bookForm) {
     bookForm.title.value = ""; 
@@ -217,7 +250,7 @@ function getFormData(form) {
     return {
         date: form.date.value,
         pages: form.pages.value,
-        read: (form.status.value == "read"),
+        read: (form.status.selectedIndex == 1),
     }
 }
 
@@ -225,18 +258,33 @@ function bookExists(key) {
     return library.myBooks.hasOwnProperty(key);
 }
 
+function restoreBookFormInput(book, bookForm) {
+    bookForm.title.value = book.title;
+    bookForm.date.value = book.date;
+    bookForm.author.value = book.author;
+    bookForm.pages.value = book.pages;
+    if (book.read) {
+        bookForm.status.selectedIndex = 1;
+    } else {
+        bookForm.status.selectedIndex = 0;
+    }
+}
+
 bookForm.addEventListener("submit", async e => {
+    if (isEditingBook) {
+        
+    }
     e.preventDefault();
     let encodedBookTitle = encodeURIComponent(bookForm.title.value);
     let encodedBookAuthor = encodeURIComponent(bookForm.author.value);
-    let fullURL = `${bookUrl}title=${encodedBookTitle}&author=${encodedBookAuthor}`;  
+    let fullApiURL = `${bookUrl}title=${encodedBookTitle}&author=${encodedBookAuthor}`;  
 
     try {
-        let response = await fetch(fullURL);
+        let response = await fetch(fullApiURL);
         let data = await response.json();
 
         if (data.numFound === 0) {
-            alert("Sorry! Your book cannot be found");
+            alert("Your book cannot be found. Please make sure you inputted the correct data.");
         } else {
             let book = data.docs[0];
             const { title, author, coverid, imgsrc } = getBookData(book);
@@ -250,25 +298,79 @@ bookForm.addEventListener("submit", async e => {
             resetInputForm(bookForm);
         }
     } catch (error) {
-        alert("There was an error trying to add the book");
+        alert("There was an error trying to add your book.");
         console.log(error);
     }
 });
 
-function closeForm() {
-    let form = document.getElementById("formModal");
-    form.classList.remove("show");
+// checks for which icon the user clicked on and responds accordingly
+display.addEventListener("click", e => {    
+    let target = e.target.closest(".smallIcons");
+    console.log(target);
+    if (!target) return;
+
+    if (target.classList.contains("heart")) {
+            target.classList.toggle("red");
+    } else if (target.classList.contains("checkmark")) {
+        target.classList.toggle("green");
+    } else if (target.classList.contains("trashcan")) {
+        // grabs the container that the icon lives in so we can delete it
+        // from display, we also need to store the bookID that the container 
+        // holds so we can grab the book from our library and delete it
+        let bookContainer = target.closest(".bookContainer");
+        confirmDeleteModal.dataset.bookID = bookContainer.id;
+        showModal(confirmDeleteModal);
+    } else { // edit button was clicked
+        isEditingBook = true;
+        // Grabbing container and getting bookID, same reason as above
+        // (access book) but this time we need the books information to 
+        // autofill the input form with current information
+        let bookContainer = target.closest(".bookContainer");
+        let book = library.myBooks[bookContainer.id];
+        // sets the forms default values to the book we're editing
+        restoreBookFormInput(book, bookForm);
+        showModal(formModal);
+    }
+});
+
+function hideModal(modal) {
+    modal.classList.remove("show");
     setTimeout(() => {
-        form.style.display = "none";
+        modal.style.display = "none";
     }, 500)
 }
 
-function showForm() {
-    let form = document.getElementById("formModal");
-    form.style.display = "flex";
-    void form.offsetWidth;
-    form.classList.add("show");
+function showModal(modal) {
+    if (isEditingBook) {
+        formStateHeader.textContent = "Edit Your Book";
+        formStateBtn.textContent = "Add Edits";
+    } else {
+        formStateHeader.textContent = "Add New Book";
+        formStateBtn.textcontent = "Add Book";
+    }
+    modal.style.display = "flex";
+    void modal.offsetWidth;
+    modal.classList.add("show");
 }
 
-closeFormBtn.addEventListener("click", closeForm);
-showFormBtn.addEventListener("click", showForm);
+confirmDeleteBtn.addEventListener("click", e => {
+    removeBook(confirmDeleteModal.dataset.bookID);
+});
+
+declineDeleteBtn.addEventListener("click", e => {
+    hideModal(confirmDeleteModal);
+})
+
+
+closeFormBtn.addEventListener("click", e => {
+    let form = document.getElementById("formModal");
+    hideModal(formModal);
+});
+
+showFormBtn.addEventListener("click", e => {
+    // this event only happens if we click add new book 
+    // reset possible last settings (editingbook and input values)
+    isEditingBook = false;
+    resetInputForm(bookForm);
+    showModal(formModal);
+});
