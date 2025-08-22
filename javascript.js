@@ -27,6 +27,8 @@ const unfinishedBooks = document.getElementById("unfinishedBooks");
 const orderAscendingOrDescending = document.getElementById("orderAscendingOrDescending");
 const orderOptions = document.getElementById("orderOptions");
 
+localStorage.clear();
+
 
 // keeps track of our collection of books to display info
 let library = {
@@ -349,9 +351,10 @@ display.addEventListener("click", e => {
         } else {
             library.numReadBooks++;
         }
+        target.classList.toggle("green");
+        book.read = !book.read;
         updateStatusOfLibrary();
         saveLibrary();
-        target.classList.toggle("green");
     } else if (target.classList.contains("trashcan")) {
         showModal(confirmDeleteModal);
     } else { // edit button was clicked
