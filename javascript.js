@@ -24,6 +24,8 @@ const favoriteBooks = document.getElementById("favoriteBooks");
 const allBooks = document.getElementById("allBooks");
 const finishedBooks = document.getElementById("finishedBooks");
 const unfinishedBooks = document.getElementById("unfinishedBooks");
+const orderAscendingOrDescending = document.getElementById("orderAscendingOrDescending");
+const orderOptions = document.getElementById("orderOptions");
 
 
 // keeps track of our collection of books to display info
@@ -441,3 +443,76 @@ unfinishedBooks.addEventListener("click", e => {
         });
     });
 });
+
+function orderDisplay() {
+    if (orderOptions.value == "noFilter") {
+        return;
+    }
+
+    let displayedBookContainers = Array.from(document.querySelectorAll(".bookContainer"));
+    console.log(displayedBookContainers);
+
+    if (orderAscendingOrDescending.value == "ascending") {
+        if (orderOptions.value == "alphabetical") {
+            displayedBookContainers.sort((container1, container2) => {
+                let book1 = library.myBooks[container1.id];
+                let book2 = library.myBooks[container2.id];
+                return book1.title.localeCompare(book2.title);
+            });
+        } else if (orderOptions.value == "author") {
+            displayedBookContainers.sort((container1, container2) => {
+                let book1 = library.myBooks[container1.id];
+                let book2 = library.myBooks[container2.id];
+                return book1.author.localeCompare(book2.author);
+            });
+        } else if (orderOptions.value == "pages") {
+            displayedBookContainers.sort((container1, container2) => {
+                let book1 = library.myBooks[container1.id];
+                let book2 = library.myBooks[container2.id];
+                return book1.pages - book2.pages;
+            });
+        } else if (orderOptions.value == "year") {
+            displayedBookContainers.sort((container1, container2) => {
+                let book1 = library.myBooks[container1.id];
+                let book2 = library.myBooks[container2.id];
+                return book1.date.localeCompare(book2.date);
+            });
+        }
+    } else {
+        if (orderOptions.value == "alphabetical") {
+            displayedBookContainers.sort((container1, container2) => {
+                let book1 = library.myBooks[container1.id];
+                let book2 = library.myBooks[container2.id];
+                return book2.title.localeCompare(book1.title);
+            });
+        } else if (orderOptions.value == "author") {
+            displayedBookContainers.sort((container1, container2) => {
+                let book1 = library.myBooks[container1.id];
+                let book2 = library.myBooks[container2.id];
+                return book2.author.localeCompare(book1.author);
+            });
+        } else if (orderOptions.value == "pages") {
+            displayedBookContainers.sort((container1, container2) => {
+                let book1 = library.myBooks[container1.id];
+                let book2 = library.myBooks[container2.id];
+                return book2.pages - book1.pages;
+            });
+        } else if (orderOptions.value == "year") {
+            displayedBookContainers.sort((container1, container2) => {
+                let book1 = library.myBooks[container1.id];
+                let book2 = library.myBooks[container2.id];
+                return book2.date.localeCompare(book1.date);
+            });
+        }
+    }
+
+    displayedBookContainers.forEach(container => {
+        display.append(container);
+    })
+
+
+}
+
+orderOptions.addEventListener("input", orderDisplay);
+
+orderAscendingOrDescending.addEventListener("input", orderDisplay);
