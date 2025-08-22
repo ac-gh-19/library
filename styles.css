@@ -299,9 +299,15 @@ input[type="search"]::-webkit-search-cancel-button {
     padding-bottom: 0;
     overflow-y: auto;   
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, .5fr));
     gap: clamp(1rem, 3vw, 2rem);
     background: rgb(227, 242, 251);
+    transition: opacity .3s ease;
+    opacity: 1;
+}
+
+.displayBooks.hide {
+    opacity: 0;
 }
 
 .bookContainer {
@@ -354,11 +360,18 @@ input[type="search"]::-webkit-search-cancel-button {
     gap: 1rem;
 }
 
+.hideElement {
+    display: none;
+}
+
 .genre:hover,
 .option:hover {
     transform: scale(1.1);
     box-shadow: 0rem 0rem .1rem .1rem rgb(0, 0, 0, .3);
+    background: rgba(228, 228, 228, 0.5);
 }
+
+
 .bookContainer:hover {
     transform: scale(1.02);
 }

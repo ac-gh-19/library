@@ -4,7 +4,7 @@ fetch(url)
     .then(response => response.json())
     .then(data => console.log(data))
     .catch(error => console.error('Error:', error));
-
+ 
 const bookUrl = "https://openlibrary.org/search.json?";
 const coverUrl = "https://covers.openlibrary.org/b/";
 const closeFormBtn = document.querySelector("#closeFormBtn");
@@ -12,7 +12,7 @@ const showFormBtn = document.querySelector("#showFormBtn");
 const formModal = document.querySelector("#formModal");
 const bookForm = document.querySelector("#bookForm");
 const numBooksTracker = document.querySelector("#numBooks");
-const readBooksTracker = document.querySelector("#readBooks");
+const numReadBooksTracker = document.querySelector("#numReadBooks");
 const numPagesTracker = document.querySelector("#numPages");
 const display = document.querySelector("#display");
 const confirmDeleteModal = document.querySelector("#confirmDeleteModal");
@@ -20,6 +20,10 @@ const confirmDeleteBtn = document.querySelector("#confirmDeleteBtn");
 const declineDeleteBtn = document.querySelector("#declineDeleteBtn");
 const formStateHeader = document.getElementById("formStateHeader");
 const formStateBtn = document.getElementById("formStateBtn");
+const favoriteBooks = document.getElementById("favoriteBooks");
+const allBooks = document.getElementById("allBooks");
+const finishedBooks = document.getElementById("finishedBooks");
+const unfinishedBooks = document.getElementById("unfinishedBooks");
 
 
 // keeps track of our collection of books to display info
@@ -48,15 +52,15 @@ function Book(title, author, date, pages, read, imgsrc, id) {
 
 function updateStatusOfLibrary() {
     numBooksTracker.textContent = library.numBooks;
-    readBooksTracker.textContent = `${library.numReadBooks} / ${library.numBooks}`;
+    numReadBooksTracker.textContent = `${library.numReadBooks} / ${library.numBooks}`;
     numPagesTracker.textContent = library.numPages;
 }
 
 let defaultCollection = [
     Book("1984", "George Orwell","1949-06-08", 328, true, "https://covers.openlibrary.org/b/id/7222246-L.jpg", 7222246),
     Book("The Hobbit", "J.R.R. Tolkien", "1937-09-21", 310, true, "https://covers.openlibrary.org/b/id/6979861-L.jpg", 6979861),
-    Book("The Outsiders", "S. E. Hinton", "1967-04-24", 192, true, "https://covers.openlibrary.org/b/olid/OL17063415M-L.jpg", "OL17063415M"),
-    Book("Fahrenheit 451", "Ray Bradbury", "1953-10-19", 190, true, "https://covers.openlibrary.org/b/olid/OL31448957M-L.jpg", "OL31448957M"),
+    Book("The Outsiders", "S. E. Hinton", "1967-04-24", 192, false, "https://covers.openlibrary.org/b/olid/OL17063415M-L.jpg", "OL17063415M"),
+    Book("Fahrenheit 451", "Ray Bradbury", "1953-10-19", 190, false, "https://covers.openlibrary.org/b/olid/OL31448957M-L.jpg", "OL31448957M"),
     Book("The Great Gatsby", "F. Scott Fitzgerald", "1925-04-10", 182, true, "https://covers.openlibrary.org/b/olid/OL26491064M-L.jpg", "OL26491064M"),
 ];
 
@@ -308,25 +312,28 @@ display.addEventListener("click", e => {
     let target = e.target.closest(".smallIcons");
     console.log(target);
     if (!target) return;
+    // grabs the container that the icon lives in
+    // we also need to store the bookID that the container 
+    // holds so we can grab the book from our library
+    let bookContainer = target.closest(".bookContainer");
+    confirmDeleteModal.dataset.bookID = bookContainer.id;
+    let book = library.myBooks[bookContainer.id];
 
     if (target.classList.contains("heart")) {
             target.classList.toggle("red");
+            book.favorited = !book.favorited;
     } else if (target.classList.contains("checkmark")) {
+        if (target.classList.contains("green")) {
+            library.numReadBooks--;
+        } else {
+            library.numReadBooks++;
+        }
+        updateStatusOfLibrary();
         target.classList.toggle("green");
     } else if (target.classList.contains("trashcan")) {
-        // grabs the container that the icon lives in so we can delete it
-        // from display, we also need to store the bookID that the container 
-        // holds so we can grab the book from our library and delete it
-        let bookContainer = target.closest(".bookContainer");
-        confirmDeleteModal.dataset.bookID = bookContainer.id;
         showModal(confirmDeleteModal);
     } else { // edit button was clicked
         isEditingBook = true;
-        // Grabbing container and getting bookID, same reason as above
-        // (access book) but this time we need the books information to 
-        // autofill the input form with current information
-        let bookContainer = target.closest(".bookContainer");
-        let book = library.myBooks[bookContainer.id];
         // sets the forms default values to the book we're editing
         restoreBookFormInput(book, bookForm);
         showModal(formModal);
@@ -373,4 +380,64 @@ showFormBtn.addEventListener("click", e => {
     isEditingBook = false;
     resetInputForm(bookForm);
     showModal(formModal);
+});
+
+function fadeOutAndInDisplay(updateDisplay) {
+    display.classList.add("hide");
+    setTimeout(() => {
+        updateDisplay();
+        display.classList.remove("hide");
+    }, 300)
+}
+
+allBooks.addEventListener("click", e => {
+    fadeOutAndInDisplay(() => {
+        let displayedBookContainers = document.querySelectorAll(".bookContainer");
+        displayedBookContainers.forEach(container => {
+            let book = library.myBooks[container.id];
+            container.classList.remove("hideElement");
+        })
+    });
+})
+
+favoriteBooks.addEventListener("click", e => {
+    fadeOutAndInDisplay(() => {
+        let displayedBookContainers = document.querySelectorAll(".bookContainer");
+        displayedBookContainers.forEach(container => {
+            let book = library.myBooks[container.id];
+            if (!book.favorited) {
+                container.classList.add("hideElement");
+            } else {
+                container.classList.remove("hideElement");
+            }
+        });
+    });
+});
+
+finishedBooks.addEventListener("click", e => {
+    fadeOutAndInDisplay(() => {
+        let displayedBookContainers = document.querySelectorAll(".bookContainer");
+        displayedBookContainers.forEach(container => {
+            let book = library.myBooks[container.id];
+            if (book.read) {
+                container.classList.remove("hideElement");
+            } else {
+                container.classList.add("hideElement");
+            }
+        })
+    });
+});
+
+unfinishedBooks.addEventListener("click", e => {
+    fadeOutAndInDisplay(() => {
+        let displayedBookContainers = document.querySelectorAll(".bookContainer");
+        displayedBookContainers.forEach(container => {
+            let book = library.myBooks[container.id];
+            if (book.read) {
+                container.classList.add("hideElement");
+            } else {
+                container.classList.remove("hideElement");
+            }
+        });
+    });
 });
