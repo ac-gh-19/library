@@ -77,7 +77,23 @@ function loadDefaultCollection() {
     updateStatusOfLibrary();
 }
 
-loadDefaultCollection();
+
+function saveLibrary() {
+    localStorage.setItem("library", JSON.stringify(library));
+}
+
+function loadLibrary() {
+    let savedLibrary = JSON.parse(localStorage.getItem("library"));
+    if (savedLibrary) {
+        library = savedLibrary;
+        for (let id in library.myBooks) {
+            addNewBookToDisplay(library.myBooks[id]);
+        };
+    } else {
+        loadDefaultCollection();
+    }
+    updateStatusOfLibrary();
+}
 
 function getTodayDate() {
     const today = new Date();
@@ -221,6 +237,8 @@ function addBook(title, author, date, pages, read, imgsrc, id) {
     
     addNewBookToDisplay(newBook);
     updateStatusOfLibrary();
+    saveLibrary();
+
 }
 
 function removeBook(id) {
@@ -229,6 +247,7 @@ function removeBook(id) {
     if (library.myBooks[id].read) library.numReadBooks--;
     delete library.myBooks[id];
     updateStatusOfLibrary();
+    saveLibrary();
     display.removeChild(document.getElementById(id));
     alert("Your book has been removed");
     hideModal(confirmDeleteModal);
@@ -331,6 +350,7 @@ display.addEventListener("click", e => {
             library.numReadBooks++;
         }
         updateStatusOfLibrary();
+        saveLibrary();
         target.classList.toggle("green");
     } else if (target.classList.contains("trashcan")) {
         showModal(confirmDeleteModal);
@@ -516,3 +536,5 @@ function orderDisplay() {
 orderOptions.addEventListener("input", orderDisplay);
 
 orderAscendingOrDescending.addEventListener("input", orderDisplay);
+
+document.addEventListener("DOMContentLoaded", loadLibrary);
