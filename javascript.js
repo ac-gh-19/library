@@ -464,13 +464,35 @@ unfinishedBooks.addEventListener("click", e => {
     });
 });
 
+function orderDisplay(order, value) {
+    if (value == "noFilter") return; 
+
+    let displayedBookContainers = Array.from(document.querySelectorAll(".bookContainer"));
+    displayedBookContainers.sort((container1, container2) => {
+        let book1value = library.myBooks[container1[value]];
+        let book2value = library.myBooks[container1[value]];
+        if (typeof book1value == "string") {
+            if (order == "ascending") {
+                return book1value.localeCompare(book2value);
+            } else {
+                return (book2value.localeCompare(book2value));
+            }
+        } else {
+            if (order == "ascending") {
+                return book1value - book2value;
+            } else {
+                return book2value - book1value;
+            }
+        }
+    })
+}
+
 function orderDisplay() {
     if (orderOptions.value == "noFilter") {
         return;
     }
 
     let displayedBookContainers = Array.from(document.querySelectorAll(".bookContainer"));
-    console.log(displayedBookContainers);
 
     if (orderAscendingOrDescending.value == "ascending") {
         if (orderOptions.value == "alphabetical") {
@@ -533,8 +555,12 @@ function orderDisplay() {
 
 }
 
-orderOptions.addEventListener("input", orderDisplay);
+orderOptions.addEventListener("input", e => {
+    orderDisplay(orderAscendingOrDescending.value, orderOptions.value)
+});
 
-orderAscendingOrDescending.addEventListener("input", orderDisplay);
+orderAscendingOrDescending.addEventListener("input", e => {
+    orderDisplay(orderAscendingOrDescending.value, orderOptions.value)
+});
 
 document.addEventListener("DOMContentLoaded", loadLibrary);
