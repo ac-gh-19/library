@@ -27,8 +27,6 @@ const unfinishedBooks = document.getElementById("unfinishedBooks");
 const orderAscendingOrDescending = document.getElementById("orderAscendingOrDescending");
 const orderOptions = document.getElementById("orderOptions");
 
-localStorage.clear();
-
 
 // keeps track of our collection of books to display info
 let library = {
@@ -40,6 +38,7 @@ let library = {
 
 // 
 let isEditingBook = false;
+
 
 function Book(title, author, date, pages, read, imgsrc, id) {
     return {
@@ -183,6 +182,9 @@ function addNewBookToDisplay(book) {
       "stroke-width": 2.5,
     });
     svgHeart.appendChild(pathHeart);
+    if (book.favorited) {
+        svgHeart.classList.toggle("red");
+    }
     svgHeart.classList.add("heart");
     editBook.appendChild(svgHeart);
   
@@ -354,7 +356,6 @@ display.addEventListener("click", e => {
         target.classList.toggle("green");
         book.read = !book.read;
         updateStatusOfLibrary();
-        saveLibrary();
     } else if (target.classList.contains("trashcan")) {
         showModal(confirmDeleteModal);
     } else { // edit button was clicked
@@ -363,6 +364,7 @@ display.addEventListener("click", e => {
         restoreBookFormInput(book, bookForm);
         showModal(formModal);
     }
+    saveLibrary();
 });
 
 function hideModal(modal) {
@@ -567,3 +569,4 @@ orderAscendingOrDescending.addEventListener("input", e => {
 });
 
 document.addEventListener("DOMContentLoaded", loadLibrary);
+window.addEventListener("beforeunload", loadLibrary)
