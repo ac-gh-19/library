@@ -428,11 +428,11 @@ showFormBtn.addEventListener("click", e => {
     showModal(formModal);
 });
 
-function fadeOutAndInDisplay(updateDisplay) {
-    display.classList.add("hide");
+function fadeOutAndInDisplay(updateDisplay, currDisplay) {
+    currDisplay.classList.add("hide");
     setTimeout(() => {
         updateDisplay();
-        display.classList.remove("hide");
+        currDisplay.classList.remove("hide");
     }, 300)
 }
 
@@ -445,7 +445,7 @@ allBooks.addEventListener("click", e => {
             let book = library.myBooks[container.id];
             container.classList.remove("hideElement");
         })
-    });
+    }, display);
 })
 
 favoriteBooks.addEventListener("click", e => {
@@ -461,7 +461,7 @@ favoriteBooks.addEventListener("click", e => {
                 container.classList.remove("hideElement");
             }
         });
-    });
+    }, display);
 });
 
 finishedBooks.addEventListener("click", e => {
@@ -477,7 +477,7 @@ finishedBooks.addEventListener("click", e => {
                 container.classList.add("hideElement");
             }
         })
-    });
+    }, display);
 });
 
 unfinishedBooks.addEventListener("click", e => {
@@ -493,7 +493,7 @@ unfinishedBooks.addEventListener("click", e => {
                 container.classList.remove("hideElement");
             }
         });
-    });
+    }, display);
 });
 
 function orderDisplay(order, value) {
@@ -665,9 +665,11 @@ function displayGenreCollection(genre) {
     displayGenres.classList.remove("hideElement");
     // Clear the old content first before displaying new books
     displayGenres.textContent = "";
-    for (let book of library.genres[genre]) {
-        addNewGenreBookToDisplay(book);
-    };
+    fadeOutAndInDisplay(() => {
+        for (let book of library.genres[genre]) {
+            addNewGenreBookToDisplay(book);
+        };
+    }, displayGenres);
 }
 
 genres.forEach(genreContainer => {
@@ -683,6 +685,7 @@ genres.forEach(genreContainer => {
         if (library.genres.hasOwnProperty(genre)) {
             displayGenreCollection(genre);
         } else {
+
             let encodedGenre = encodeURIComponent(genre);
             try {
                 let response = await fetch(`${bookUrl}subject=${encodedGenre}`);
