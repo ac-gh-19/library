@@ -14,10 +14,12 @@ const bookForm = document.querySelector("#bookForm");
 const numBooksTracker = document.querySelector("#numBooks");
 const numReadBooksTracker = document.querySelector("#numReadBooks");
 const numPagesTracker = document.querySelector("#numPages");
-const display = document.querySelector("#display");
+const display = document.querySelector("#displayCollection");
+const displayGenres = document.querySelector("#displayGenres");
 const confirmDeleteModal = document.querySelector("#confirmDeleteModal");
 const confirmDeleteBtn = document.querySelector("#confirmDeleteBtn");
 const declineDeleteBtn = document.querySelector("#declineDeleteBtn");
+const genres = document.querySelectorAll(".genre");
 const formStateHeader = document.getElementById("formStateHeader");
 const formStateBtn = document.getElementById("formStateBtn");
 const favoriteBooks = document.getElementById("favoriteBooks");
@@ -31,12 +33,13 @@ const orderOptions = document.getElementById("orderOptions");
 // keeps track of our collection of books to display info
 let library = {
     myBooks: {},
+    genres: {},
     numBooks: 0,
     numPages: 0,
     numReadBooks: 0,
+    currentGenre: "",
 }
 
-// 
 let isEditingBook = false;
 
 
@@ -50,6 +53,15 @@ function Book(title, author, date, pages, read, imgsrc, id) {
         imgsrc: imgsrc,
         id: id,
         favorited: false,
+    }
+}
+
+function GenreBook(title, author, date, imgsrc) {
+    return {
+        title: title,
+        author: author,
+        date: date,
+        imgsrc, imgsrc,
     }
 }
 
@@ -80,13 +92,22 @@ function loadDefaultCollection() {
 
 
 function saveLibrary() {
-    localStorage.setItem("library", JSON.stringify(library));
+    localStorage.setItem("books", JSON.stringify(library.myBooks));
+    localStorage.setItem("numPages", JSON.stringify(library.numPages));
+    localStorage.setItem("numBooks", JSON.stringify(library.numBooks));
+    localStorage.setItem("numReadBooks", JSON.stringify(library.numReadBooks));
 }
 
 function loadLibrary() {
-    let savedLibrary = JSON.parse(localStorage.getItem("library"));
-    if (savedLibrary) {
-        library = savedLibrary;
+    let savedBooks = JSON.parse(localStorage.getItem("books"));
+    let savedNumPages = JSON.parse(localStorage.getItem("numPages"));
+    let savedNumBooks = JSON.parse(localStorage.getItem("numBooks"));
+    let savedNumReadBooks = JSON.parse(localStorage.getItem("numReadBooks"));
+    if (savedBooks) {
+        library.myBooks = savedBooks;
+        library.numPages = savedNumPages;
+        library.numBooks = savedNumBooks;
+        library.numReadBooks = savedNumReadBooks;
         for (let id in library.myBooks) {
             addNewBookToDisplay(library.myBooks[id]);
         };
@@ -228,7 +249,7 @@ function addNewBookToDisplay(book) {
     editBookContainer.appendChild(trashBook);
     bookContainer.appendChild(editBookContainer);
   
-    document.getElementById("display").append(bookContainer);
+    document.getElementById("displayCollection").append(bookContainer);
 }
 
 // creates a new book object and updates our library information
@@ -241,8 +262,6 @@ function addBook(title, author, date, pages, read, imgsrc, id) {
     
     addNewBookToDisplay(newBook);
     updateStatusOfLibrary();
-    saveLibrary();
-
 }
 
 function removeBook(id) {
@@ -251,7 +270,6 @@ function removeBook(id) {
     if (library.myBooks[id].read) library.numReadBooks--;
     delete library.myBooks[id];
     updateStatusOfLibrary();
-    saveLibrary();
     display.removeChild(document.getElementById(id));
     alert("Your book has been removed");
     hideModal(confirmDeleteModal);
@@ -313,8 +331,10 @@ bookForm.addEventListener("submit", async e => {
         let data = await response.json();
 
         if (data.numFound === 0) {
-            alert("Your book cannot be found. Please make sure you inputted the correct data.");
+            alert("Your book cannot be found. Please make sure you input the correct data.");
         } else {
+            console.log(data);
+            console.log(data.docs[0]);
             let book = data.docs[0];
             const { title, author, coverid, imgsrc } = getBookData(book);
             const { date, pages, read } = getFormData(bookForm);
@@ -364,7 +384,6 @@ display.addEventListener("click", e => {
         restoreBookFormInput(book, bookForm);
         showModal(formModal);
     }
-    saveLibrary();
 });
 
 function hideModal(modal) {
@@ -418,8 +437,10 @@ function fadeOutAndInDisplay(updateDisplay) {
 }
 
 allBooks.addEventListener("click", e => {
+    display.classList.remove("hideElement");
+    displayGenres.classList.add("hideElement");
     fadeOutAndInDisplay(() => {
-        let displayedBookContainers = document.querySelectorAll(".bookContainer");
+        let displayedBookContainers = document.querySelectorAll("#displayCollection > .bookContainer");
         displayedBookContainers.forEach(container => {
             let book = library.myBooks[container.id];
             container.classList.remove("hideElement");
@@ -428,8 +449,10 @@ allBooks.addEventListener("click", e => {
 })
 
 favoriteBooks.addEventListener("click", e => {
+    display.classList.remove("hideElement");
+    displayGenres.classList.add("hideElement");
     fadeOutAndInDisplay(() => {
-        let displayedBookContainers = document.querySelectorAll(".bookContainer");
+        let displayedBookContainers = document.querySelectorAll("#displayCollection > .bookContainer");
         displayedBookContainers.forEach(container => {
             let book = library.myBooks[container.id];
             if (!book.favorited) {
@@ -443,7 +466,9 @@ favoriteBooks.addEventListener("click", e => {
 
 finishedBooks.addEventListener("click", e => {
     fadeOutAndInDisplay(() => {
-        let displayedBookContainers = document.querySelectorAll(".bookContainer");
+        display.classList.remove("hideElement");
+        displayGenres.classList.add("hideElement");
+        let displayedBookContainers = document.querySelectorAll("#displayCollection > .bookContainer");
         displayedBookContainers.forEach(container => {
             let book = library.myBooks[container.id];
             if (book.read) {
@@ -457,7 +482,9 @@ finishedBooks.addEventListener("click", e => {
 
 unfinishedBooks.addEventListener("click", e => {
     fadeOutAndInDisplay(() => {
-        let displayedBookContainers = document.querySelectorAll(".bookContainer");
+        display.classList.remove("hideElement");
+        displayGenres.classList.add("hideElement");
+        let displayedBookContainers = document.querySelectorAll("#displayCollection > .bookContainer");
         displayedBookContainers.forEach(container => {
             let book = library.myBooks[container.id];
             if (book.read) {
@@ -475,7 +502,7 @@ function orderDisplay(order, value) {
     let displayedBookContainers = Array.from(document.querySelectorAll(".bookContainer"));
     displayedBookContainers.sort((container1, container2) => {
         let book1value = library.myBooks[container1[value]];
-        let book2value = library.myBooks[container1[value]];
+        let book2value = library.myBooks[container2[value]];
         if (typeof book1value == "string") {
             if (order == "ascending") {
                 return book1value.localeCompare(book2value);
@@ -568,5 +595,107 @@ orderAscendingOrDescending.addEventListener("input", e => {
     orderDisplay(orderAscendingOrDescending.value, orderOptions.value)
 });
 
+function getBookData(book) {
+    return {
+        title: book.title,
+        author: book.author_name[0],
+        cover: book.cover_i,
+        imgsrc: `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg` || "assets/catpfp.jpg",
+    };
+}
+
+function getBooksInGenre(genre, data) {
+    let booksInGenre = [];
+    for (let i = 0; i < 21; ++i) {
+        let book = data.docs[i];
+        const { title, author, coverid, imgsrc } = getBookData(book);
+        let newBook = new GenreBook(title, author, book.first_publish_year, imgsrc);
+        booksInGenre.push(newBook);
+    }
+    return booksInGenre;
+}
+
+function addNewGenreBookToDisplay(book) {
+    // Main container
+    const bookContainer = document.createElement('div');
+    bookContainer.classList.add('genreBookContainer');
+    bookContainer.setAttribute('id', book.title);
+  
+    // Book cover
+    const img = document.createElement('img');
+    img.src = book.imgsrc || 'assets/catpfp.jpg';
+    img.alt = "Book Cover";
+    img.classList.add('bookCover');
+    bookContainer.appendChild(img);
+  
+    // Info container
+    const bookInfo = document.createElement('div');
+    bookInfo.classList.add('bookInfo');
+  
+    // Title
+    const titleDiv = document.createElement('div');
+    titleDiv.classList.add('bookCardLargeFont');
+    titleDiv.textContent = book.title;
+    bookInfo.appendChild(titleDiv);
+  
+    // Author
+    const authorDiv = document.createElement('div');
+    authorDiv.classList.add('bookCardMedFont');
+    authorDiv.innerHTML = `by <em>${book.author}</em>`;
+    bookInfo.appendChild(authorDiv);
+  
+    // Date
+    if (book.date) {
+      const dateDiv = document.createElement('div');
+      dateDiv.textContent = `Published: ${book.date}`;
+      bookInfo.appendChild(dateDiv);
+    }
+  
+    // Append info
+    bookContainer.appendChild(bookInfo);
+  
+    // Add to display
+    displayGenres.append(bookContainer);
+  }
+
+
+function displayGenreCollection(genre) {
+    // We swap between two displays, one for our collection and one for the genres
+    display.classList.add("hideElement");
+    displayGenres.classList.remove("hideElement");
+    // Clear the old content first before displaying new books
+    displayGenres.textContent = "";
+    for (let book of library.genres[genre]) {
+        addNewGenreBookToDisplay(book);
+    };
+}
+
+genres.forEach(genreContainer => {
+    genreContainer.addEventListener("click", async e => {
+        let genre = genreContainer.querySelector("p").textContent;
+
+        // if we're already on selected genre and we click again, return instead of executing repeatedly
+        if (library.currentGenre == genre && display.classList.contains("hideElement")) return;
+        library.currentGenre = genre;
+
+        // if we've already clicked on a genre and loaded books into it, just go straight to display instead
+        // of calling the API again and executing / storing the information repeatedly.
+        if (library.genres.hasOwnProperty(genre)) {
+            displayGenreCollection(genre);
+        } else {
+            let encodedGenre = encodeURIComponent(genre);
+            try {
+                let response = await fetch(`${bookUrl}subject=${encodedGenre}`);
+                let data = await response.json();
+                let books = getBooksInGenre(genre, data);
+                library.genres[genre] = books;
+                displayGenreCollection(genre);
+            } catch (error) {
+                alert("There was an error loading this genre.");
+            }
+        }
+    })
+})
+
 document.addEventListener("DOMContentLoaded", loadLibrary);
-window.addEventListener("beforeunload", loadLibrary)
+window.addEventListener("beforeunload", saveLibrary)

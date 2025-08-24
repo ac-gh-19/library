@@ -1,191 +1,195 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AC's Library</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <!-- MODALS - TO BE HIDDEN THEN SHOWN WHEN EVENT HAPPENS -->
-        <div id="formModal" class="modal">
-            <div class="formContainer">
-                <button type="button" id="closeFormBtn">X</button>
-                <h3 class="formHeader"><span id="formStateHeader"></span></h3>
-                <form id="bookForm">
-                    <div class="bookFormOption">
-                        <label for="title">
-                            <span class="inputTitle">Title<span aria-label="required">*</span></span>
-                            <input type="text" minlength="2"  name="title" id="title" required placeholder="Harry Potter and the Sorcerer's Stone" pattern="^[A-Za-z\s.'-]{2,50}$">
-                        </label>
-                    </div>
-                    <div class="bookFormOption">
-                        <label for="author">
-                            <span class="inputTitle">Author<span aria-label="required">*</span></span>
-                            <input type="text" minlength="2" name="author" id="author" required placeholder="J. K. Rowling" pattern="^[A-Za-z\s.'-]{2,50}$">
-                        </label>
-                    </div>
-                    <div class="bookFormOption">
-                        <label for="pages">
-                            <span class="inputTitle">Pages<span aria-label="required">*</span></span>
-                            <input type="number" name="pages" id="pages" placeholder="309" required>
-                        </label>
-                    </div>
-                    <div class="bookFormOption">
-                        <label for="date">
-                            <span class="inputTitle">Date Obtained</span>
-                            <input type="date" name="date" id="date">
-                        </label>
-                    </div>
-                    <div class="bookFormOption">
-                        <span class="inputTitle">Status</span>
-                        <select name="status" id="status">
-                            <option value="unread">Unread</option>
-                            <option value="read">Read</option>
-                        </select>
-                    </div>
-                </form>
-                <button type="submit" id="submitFormBtn" form="bookForm"><span id="formStateBtn">Add Book</span></button>
-            </div>
-        </div>
-
-        <div id="confirmDeleteModal" class="modal">
-            <div class="confirmDeleteContainer">
-                <h1>Are you sure you want to delete this book?</h1>
-                <div>
-                    <button id="confirmDeleteBtn" class="deleteModalBtn">Yes</button>
-                    <button id="declineDeleteBtn" class="deleteModalBtn">No</button>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AC's Library</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div class="container">
+            <!-- MODALS - TO BE HIDDEN THEN SHOWN WHEN EVENT HAPPENS -->
+            <div id="formModal" class="modal">
+                <div class="formContainer">
+                    <button type="button" id="closeFormBtn">X</button>
+                    <h3 class="formHeader"><span id="formStateHeader"></span></h3>
+                    <form id="bookForm">
+                        <div class="bookFormOption">
+                            <label for="title">
+                                <span class="inputTitle">Title<span aria-label="required">*</span></span>
+                                <input type="text" minlength="2"  name="title" id="title" required placeholder="Harry Potter and the Sorcerer's Stone" pattern="^[A-Za-z\s.'-]{2,50}$">
+                            </label>
+                        </div>
+                        <div class="bookFormOption">
+                            <label for="author">
+                                <span class="inputTitle">Author<span aria-label="required">*</span></span>
+                                <input type="text" minlength="2" name="author" id="author" required placeholder="J. K. Rowling" pattern="^[A-Za-z\s.'-]{2,50}$">
+                            </label>
+                        </div>
+                        <div class="bookFormOption">
+                            <label for="pages">
+                                <span class="inputTitle">Pages<span aria-label="required">*</span></span>
+                                <input type="number" name="pages" id="pages" placeholder="309" required>
+                            </label>
+                        </div>
+                        <div class="bookFormOption">
+                            <label for="date">
+                                <span class="inputTitle">Date Obtained</span>
+                                <input type="date" name="date" id="date">
+                            </label>
+                        </div>
+                        <div class="bookFormOption">
+                            <span class="inputTitle">Status</span>
+                            <select name="status" id="status">
+                                <option value="unread">Unread</option>
+                                <option value="read">Read</option>
+                            </select>
+                        </div>
+                    </form>
+                    <button type="submit" id="submitFormBtn" form="bookForm"><span id="formStateBtn">Add Book</span></button>
                 </div>
             </div>
+
+            <div id="confirmDeleteModal" class="modal">
+                <div class="confirmDeleteContainer">
+                    <h1>Are you sure you want to delete this book?</h1>
+                    <div>
+                        <button id="confirmDeleteBtn" class="deleteModalBtn">Yes</button>
+                        <button id="declineDeleteBtn" class="deleteModalBtn">No</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- MODALS - TO BE HIDDEN THEN SHOWN WHEN EVENT HAPPENS -->
+
+            <div class="header">
+                <div class="headerTitle">
+                    <img src="assets/booksicon.svg" alt="Books Leaning on Each Other" class="largeIcons">
+                    <h1>AC's Library</h1>
+                </div>
+                <div class="headerSearchbarContainer">
+                    <button type="button" for="searchbar" class="searchBtn">
+                        <img src="assets/searchGlass.svg" class="smallIcons">
+                    </button>
+                    <input type="search" id="searchbar" name="searchbar" placeholder="Harry Potter">
+                </div>
+                <div class="headerIcons">
+                    <img src="assets/pfpIcon.svg" alt="Profile Icon" class="smallIcons">
+                    <img src="assets/catpfp.jpg" alt="Cat Picture" class="mediumIcons pfp">
+                    <p><a class="profileName" href="https://github.com/ac-gh-19">ac-gh-19</a></p>
+                </div>
+            </div>
+
+
+            <div class="sidebar">
+                <div class="viewOptions">
+                    <h3>Your Journey</h3>
+                    <li class="option" id="allBooks">
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>My Collection</p>
+                    </li>
+                    <li class="option" id="favoriteBooks">
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>Favorited Books</p>
+                    </li>
+                    <li class="option" id="finishedBooks">
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>Read Books</p>
+                    </li>
+                    <li class="option" id="unfinishedBooks">
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>Unread Books</p>
+                    </li>
+                </div>
+                <div class="genres">
+                    <h3>Explore Genres</h3>
+                    <li class="genre" id="music_theory">
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>Music Theory</p>
+                    </li>
+                    <li class="genre" id="photography">
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>Photography</p>
+                    </li>
+                    <li class="genre" id="fantasy">
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>Fantasy</p>
+                    </li>
+                    <li class="genre" id="literature">
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>Literature</p>
+                    </li>
+                    <li class="genre" id="science_fiction">
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>Science Fiction</p>
+                    </li>
+                    <li class="genre" id="horror">  
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>Horror</p>
+                    </li>
+                    <li class="genre" id="mathematics">
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>Mathematics</p>
+                    </li>
+                    <li class="genre" id="programming">
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>Programming</p>
+                    </li>
+                    <li class="genre" id="political_science">
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>Political Science</p>
+                    </li>
+                    <li class="genre" id="nonfiction">
+                        <img src="assets/book.svg" alt="" class="smallIcons">
+                        <p>Non Fiction</p>
+                    </li>
+                </div>
+            </div>
+
+
+            <div class="display">
+                
+                <div class="displayOptionsContainer">
+                    <div class="info">
+                        My Books
+                        <div id="numBooks">0</div>
+                    </div>
+                    <div class="info">
+                        Read Books
+                        <div id="numReadBooks">0/0</div>
+                    </div>
+                    <div class="info">
+                        Total Pages
+                        <div id="numPages">0</div>
+                    </div>
+                    <select name="orderOptions" id="orderOptions" class="filters">
+                        <option value="noFilter">No Filter</option>
+                        <option value="alphabetical">Alphabetical</option>
+                        <option value="author">Author</option>
+                        <option value="pages">Pages</option>
+                        <option value="year">Year Added</option>
+                    </select>
+
+                    <select name="orderOptions" id="orderAscendingOrDescending" class="filters">
+                        <option value="ascending">Ascending</option>
+                        <option value="descending">Descending</option>
+                    </select>
+
+                    <button type="button" id="showFormBtn" class="filters">New Book</button>
+                </div>
+
+                <div class="displayBooks" id="displayCollection">
+                </div>
+
+                <div class="displayBooks hideElement" id="displayGenres">
+                </div>
+
+            </div>
+
+
         </div>
         
-        <!-- MODALS - TO BE HIDDEN THEN SHOWN WHEN EVENT HAPPENS -->
 
-        <div class="header">
-            <div class="headerTitle">
-                <img src="assets/booksicon.svg" alt="Books Leaning on Each Other" class="largeIcons">
-                <h1>AC's Library</h1>
-            </div>
-            <div class="headerSearchbarContainer">
-                <button type="button" for="searchbar" class="searchBtn">
-                    <img src="assets/searchGlass.svg" class="smallIcons">
-                </button>
-                <input type="search" id="searchbar" name="searchbar" placeholder="Harry Potter">
-            </div>
-            <div class="headerIcons">
-                <img src="assets/pfpIcon.svg" alt="Profile Icon" class="smallIcons">
-                <img src="assets/catpfp.jpg" alt="Cat Picture" class="mediumIcons pfp">
-                <p><a class="profileName" href="https://github.com/ac-gh-19">ac-gh-19</a></p>
-            </div>
-        </div>
-
-
-        <div class="sidebar">
-            <div class="viewOptions">
-                <h3>Your Journey</h3>
-                <li class="option" id="allBooks">
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>My Collection</p>
-                </li>
-                <li class="option" id="favoriteBooks">
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>Favorited Books</p>
-                </li>
-                <li class="option" id="finishedBooks">
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>Read Books</p>
-                </li>
-                <li class="option" id="unfinishedBooks">
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>Unread Books</p>
-                </li>
-            </div>
-            <div class="genres">
-                <h3>Explore Genres</h3>
-                <li class="genre" id="music_theory">
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>Music Theory</p>
-                </li>
-                <li class="genre" id="photography">
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>Photography</p>
-                </li>
-                <li class="genre" id="fantasy">
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>Fantasy</p>
-                </li>
-                <li class="genre" id="literature">
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>Literature</p>
-                </li>
-                <li class="genre" id="science_fiction">
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>Science Fiction</p>
-                </li>
-                <li class="genre" id="horror">  
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>Horror</p>
-                </li>
-                <li class="genre" id="mathematics">
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>Mathematics</p>
-                </li>
-                <li class="genre" id="programming">
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>Programming</p>
-                </li>
-                <li class="genre" id="political_science">
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>Political Science</p>
-                </li>
-                <li class="genre" id="cookbooks">
-                    <img src="assets/book.svg" alt="" class="smallIcons">
-                    <p>Cookbooks</p>
-                </li>
-            </div>
-        </div>
-
-
-        <div class="display">
-            
-            <div class="displayOptionsContainer">
-                <div class="info">
-                    My Books
-                    <div id="numBooks">0</div>
-                </div>
-                <div class="info">
-                    Read Books
-                    <div id="numReadBooks">0/0</div>
-                </div>
-                <div class="info">
-                    Total Pages
-                    <div id="numPages">0</div>
-                </div>
-                <select name="orderOptions" id="orderOptions" class="filters">
-                    <option value="noFilter">No Filter</option>
-                    <option value="alphabetical">Alphabetical</option>
-                    <option value="author">Author</option>
-                    <option value="pages">Pages</option>
-                    <option value="year">Year Added</option>
-                </select>
-
-                <select name="orderOptions" id="orderAscendingOrDescending" class="filters">
-                    <option value="ascending">Ascending</option>
-                    <option value="descending">Descending</option>
-                </select>
-
-                <button type="button" id="showFormBtn" class="filters">New Book</button>
-            </div>
-
-            <div class="displayBooks" id="display">
-            </div>
-        </div>
-
-
-    </div>
-    
-
-    <script src="javascript.js"></script>
-</body>
-</html>
+        <script src="javascript.js"></script>
+    </body>
+    </html>
