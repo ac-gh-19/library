@@ -498,16 +498,18 @@ unfinishedBooks.addEventListener("click", e => {
 
 function orderDisplay(order, value) {
     if (value == "noFilter") return; 
+    if (value == "alphabetical") value = "title";
+    if (value == "year") value = "date";
 
     let displayedBookContainers = Array.from(document.querySelectorAll(".bookContainer"));
     displayedBookContainers.sort((container1, container2) => {
-        let book1value = library.myBooks[container1[value]];
-        let book2value = library.myBooks[container2[value]];
+        let book1value = library.myBooks[container1.id][value];
+        let book2value = library.myBooks[container2.id][value];
         if (typeof book1value == "string") {
             if (order == "ascending") {
                 return book1value.localeCompare(book2value);
             } else {
-                return (book2value.localeCompare(book2value));
+                return book2value.localeCompare(book1value);
             }
         } else {
             if (order == "ascending") {
@@ -517,75 +519,79 @@ function orderDisplay(order, value) {
             }
         }
     })
-}
-
-function orderDisplay() {
-    if (orderOptions.value == "noFilter") {
-        return;
-    }
-
-    let displayedBookContainers = Array.from(document.querySelectorAll(".bookContainer"));
-
-    if (orderAscendingOrDescending.value == "ascending") {
-        if (orderOptions.value == "alphabetical") {
-            displayedBookContainers.sort((container1, container2) => {
-                let book1 = library.myBooks[container1.id];
-                let book2 = library.myBooks[container2.id];
-                return book1.title.localeCompare(book2.title);
-            });
-        } else if (orderOptions.value == "author") {
-            displayedBookContainers.sort((container1, container2) => {
-                let book1 = library.myBooks[container1.id];
-                let book2 = library.myBooks[container2.id];
-                return book1.author.localeCompare(book2.author);
-            });
-        } else if (orderOptions.value == "pages") {
-            displayedBookContainers.sort((container1, container2) => {
-                let book1 = library.myBooks[container1.id];
-                let book2 = library.myBooks[container2.id];
-                return book1.pages - book2.pages;
-            });
-        } else if (orderOptions.value == "year") {
-            displayedBookContainers.sort((container1, container2) => {
-                let book1 = library.myBooks[container1.id];
-                let book2 = library.myBooks[container2.id];
-                return book1.date.localeCompare(book2.date);
-            });
-        }
-    } else {
-        if (orderOptions.value == "alphabetical") {
-            displayedBookContainers.sort((container1, container2) => {
-                let book1 = library.myBooks[container1.id];
-                let book2 = library.myBooks[container2.id];
-                return book2.title.localeCompare(book1.title);
-            });
-        } else if (orderOptions.value == "author") {
-            displayedBookContainers.sort((container1, container2) => {
-                let book1 = library.myBooks[container1.id];
-                let book2 = library.myBooks[container2.id];
-                return book2.author.localeCompare(book1.author);
-            });
-        } else if (orderOptions.value == "pages") {
-            displayedBookContainers.sort((container1, container2) => {
-                let book1 = library.myBooks[container1.id];
-                let book2 = library.myBooks[container2.id];
-                return book2.pages - book1.pages;
-            });
-        } else if (orderOptions.value == "year") {
-            displayedBookContainers.sort((container1, container2) => {
-                let book1 = library.myBooks[container1.id];
-                let book2 = library.myBooks[container2.id];
-                return book2.date.localeCompare(book1.date);
-            });
-        }
-    }
 
     displayedBookContainers.forEach(container => {
         display.append(container);
     })
-
-
 }
+
+// function orderDisplay() {
+//     if (orderOptions.value == "noFilter") {
+//         return;
+//     }
+
+//     let displayedBookContainers = Array.from(document.querySelectorAll(".bookContainer"));
+
+//     if (orderAscendingOrDescending.value == "ascending") {
+//         if (orderOptions.value == "alphabetical") {
+//             displayedBookContainers.sort((container1, container2) => {
+//                 let book1 = library.myBooks[container1.id];
+//                 let book2 = library.myBooks[container2.id];
+//                 return book1.title.localeCompare(book2.title);
+//             });
+//         } else if (orderOptions.value == "author") {
+//             displayedBookContainers.sort((container1, container2) => {
+//                 let book1 = library.myBooks[container1.id];
+//                 let book2 = library.myBooks[container2.id];
+//                 return book1.author.localeCompare(book2.author);
+//             });
+//         } else if (orderOptions.value == "pages") {
+//             displayedBookContainers.sort((container1, container2) => {
+//                 let book1 = library.myBooks[container1.id];
+//                 let book2 = library.myBooks[container2.id];
+//                 return book1.pages - book2.pages;
+//             });
+//         } else if (orderOptions.value == "year") {
+//             displayedBookContainers.sort((container1, container2) => {
+//                 let book1 = library.myBooks[container1.id];
+//                 let book2 = library.myBooks[container2.id];
+//                 return book1.date.localeCompare(book2.date);
+//             });
+//         }
+//     } else {
+//         if (orderOptions.value == "alphabetical") {
+//             displayedBookContainers.sort((container1, container2) => {
+//                 let book1 = library.myBooks[container1.id];
+//                 let book2 = library.myBooks[container2.id];
+//                 return book2.title.localeCompare(book1.title);
+//             });
+//         } else if (orderOptions.value == "author") {
+//             displayedBookContainers.sort((container1, container2) => {
+//                 let book1 = library.myBooks[container1.id];
+//                 let book2 = library.myBooks[container2.id];
+//                 return book2.author.localeCompare(book1.author);
+//             });
+//         } else if (orderOptions.value == "pages") {
+//             displayedBookContainers.sort((container1, container2) => {
+//                 let book1 = library.myBooks[container1.id];
+//                 let book2 = library.myBooks[container2.id];
+//                 return book2.pages - book1.pages;
+//             });
+//         } else if (orderOptions.value == "year") {
+//             displayedBookContainers.sort((container1, container2) => {
+//                 let book1 = library.myBooks[container1.id];
+//                 let book2 = library.myBooks[container2.id];
+//                 return book2.date.localeCompare(book1.date);
+//             });
+//         }
+//     }
+
+//     displayedBookContainers.forEach(container => {
+//         display.append(container);
+//     })
+
+
+// }
 
 orderOptions.addEventListener("input", e => {
     orderDisplay(orderAscendingOrDescending.value, orderOptions.value)
